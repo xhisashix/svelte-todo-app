@@ -1,13 +1,31 @@
 <script>
-	let todos = [{ id: 1, title: 'テスト' }];
-	let todoTitle = '';
-	function getTodoLen() {
-		return todos.length + 1;
+	import { onMount } from 'svelte';
+
+	let todoData = [{ id: Number, title: String }];
+	let url = 'http://localhost:3000/todo';
+	onMount(async () => {
+		const res = await fetch(url);
+		todoData = await res.json();
+	});
+
+	/**
+	 * @param {string | any[]} todoList
+	 */
+	function getTodoLen(todoList) {
+		return todoList.length + 1;
 	}
 
-	function add() {
-		todos = todos.concat({ id: getTodoLen(), title: todoTitle });
-		console.log(todos);
+	/**
+	 * @type {string}
+	 */
+	let value;
+
+	/**
+	 * @param {any[]} todoList
+	 */
+	function addTodo(todoList) {
+		todoData = todoList.concat({ id: getTodoLen(todoList), title: value });
+		console.log(todoData)
 	}
 </script>
 
@@ -19,12 +37,13 @@
 <section>
 	<h1>Todo</h1>
 
-	<input type="text" bind:value={todoTitle} />
-	<button on:click={add}>追加</button>
+	<input type="text" bind:value />
+	<button on:click={addTodo(todoData)}>追加</button>
 
 	<ul>
-		{#each todos as todo}
+		{#each todoData as todo}
 			<li>
+				<p>{todo.id}</p>
 				<input type="checkbox" />
 				<p>{todo.title}</p>
 				<p />
