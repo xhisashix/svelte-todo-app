@@ -10,7 +10,8 @@
 		"test": "playwright test",
 		"test:unit": "vitest",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
-		"format": "prettier --plugin-search-dir . --write ."
+		"format": "prettier --plugin-search-dir . --write .",
+		"json": "json-server --watch db.json"
 	},
 	"devDependencies": {
 		"@fontsource/fira-mono": "^4.5.10",
@@ -32,6 +33,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"axios": "^1.2.2",
 		"json-server": "^0.17.1"
 	}
 }
