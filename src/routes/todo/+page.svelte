@@ -1,4 +1,6 @@
 <script>
+// @ts-nocheck
+
 	import { onMount } from 'svelte';
 
 	let todoData = [{ id: Number, title: String }];
@@ -25,7 +27,30 @@
 	 */
 	function addTodo(todoList) {
 		todoData = todoList.concat({ id: getTodoLen(todoList), title: value });
-		console.log(todoData)
+		console.log(todoData);
+		let putData = todoData[todoData.length - 1];
+		putTodo('http://localhost:3000/todo', putData);
+	}
+
+	/**
+	 * @param {string} url
+	 * @param {any[]} data
+	 */
+	async function putTodo(url, data) {
+		await fetch(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data)
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				console.log('Success', data);
+			})
+			.catch((error) => {
+				console.log('Error', error);
+			});
 	}
 </script>
 
