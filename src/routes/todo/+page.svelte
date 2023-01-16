@@ -1,9 +1,9 @@
 <script>
-// @ts-nocheck
+	// @ts-nocheck
 
 	import { onMount } from 'svelte';
 
-	let todoData = [{ id: Number, title: String }];
+	let todoData = [{ id: Number, title: String, done: Boolean }];
 	let url = 'http://localhost:3000/todo';
 	onMount(async () => {
 		const res = await fetch(url);
@@ -26,7 +26,7 @@
 	 * @param {any[]} todoList
 	 */
 	function addTodo(todoList) {
-		todoData = todoList.concat({ id: getTodoLen(todoList), title: value });
+		todoData = todoList.concat({ id: getTodoLen(todoList), title: value, 'done': false });
 		console.log(todoData);
 		let putData = todoData[todoData.length - 1];
 		putTodo('http://localhost:3000/todo', putData);
@@ -63,22 +63,41 @@
 	<h1>Todo</h1>
 
 	<input type="text" bind:value />
-	<button on:click={addTodo(todoData)}>追加</button>
+	<button disabled={!value} on:click={addTodo(todoData)}>追加</button>
 
+	<h2>Task</h2>
 	<ul>
 		{#each todoData as todo}
-			<li>
-				<p>{todo.id}</p>
-				<input type="checkbox" />
-				<p>{todo.title}</p>
-				<p />
-			</li>
+			{#if todo.done === false}
+				<li>
+					<input type="checkbox" bind:checked={todo.done} />
+					<p>{todo.title}</p>
+					<p />
+				</li>
+			{/if}
 		{/each}
 	</ul>
+
+	<h2>Done</h2>
+	<ul>
+		{#each todoData as todo}
+			{#if todo.done === true}
+				<li class="done">
+					<input type="checkbox" bind:checked={todo.done} />
+					<p>{todo.title}</p>
+					<p />
+				</li>
+			{/if}
+		{/each}
+	</ul>
+
 </section>
 
 <style>
 	ul li {
 		display: flex;
+	}
+	ul .done {
+		opacity: 0.4;
 	}
 </style>
