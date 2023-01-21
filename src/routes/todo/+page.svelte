@@ -4,11 +4,16 @@
 	import { onMount } from 'svelte';
 
 	let todoData = [{ id: Number, title: String, done: Boolean }];
+	$: todoDatas = todoData;
 	const url = 'http://localhost:3000/todo';
 	onMount(async () => {
+		getTodoData();
+	});
+
+	async function getTodoData() {
 		const res = await fetch(url);
 		todoData = await res.json();
-	});
+	}
 
 	/**
 	 * @param {string | any[]} todoList
@@ -72,6 +77,34 @@
 				console.log('Error', error);
 			});
 	}
+
+	/**
+	 * Done todo
+	 */
+	function doneTodo(todoData) {
+		todoData.done = true;
+		updateTodo(todoData);
+		getTodoData()
+	}
+
+	/**
+	 * Un done todo
+	*/
+	function unDoneTodo(todoData) {
+		todoData.done = false;
+		updateTodo(todoData);
+		getTodoData()
+	}
+
+	/**
+	 * change todo title
+	 */
+	function changeTodoTitle(todoData, value) {
+		todoData.title = value;
+		console.log(value)
+		updateTodo(todoData);
+		getTodoData()
+	}
 </script>
 
 <svelte:head>
@@ -89,8 +122,9 @@
 		{#each todoData as todo}
 			{#if todo.done === false}
 				<li>
-					<input type="checkbox" bind:checked={todo.done} />
-					<input value={todo.title} />
+					<input bind:value={todo.title} />
+					<button on:click={doneTodo(todo)}>Done</button>
+					<button on:click={changeTodoTitle(todo, todo.title)}>Edit</button>
 				</li>
 			{/if}
 		{/each}
@@ -100,8 +134,8 @@
 		{#each todoData as todo}
 			{#if todo.done === true}
 				<li class="done">
-					<input type="checkbox" bind:checked={todo.done} />
 					<p>{todo.title}</p>
+					<button on:click={unDoneTodo(todo)}>UnDone</button>
 				</li>
 			{/if}
 		{/each}
