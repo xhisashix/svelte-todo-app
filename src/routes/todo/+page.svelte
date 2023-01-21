@@ -4,7 +4,6 @@
 	import { onMount } from 'svelte';
 
 	let todoData = [{ id: Number, title: String, done: Boolean }];
-	$: todoDatas = todoData;
 	const url = 'http://localhost:3000/todo';
 	onMount(async () => {
 		getTodoData();
@@ -35,6 +34,7 @@
 		console.log(todoData);
 		let postData = todoData[todoData.length - 1];
 		postTodo(url, postData);
+		value = '';
 	}
 
 	/**
