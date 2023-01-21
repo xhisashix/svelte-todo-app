@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 
 	let todoData = [{ id: Number, title: String, done: Boolean }];
-	let url = 'http://localhost:3000/todo';
+	const url = 'http://localhost:3000/todo';
 	onMount(async () => {
 		const res = await fetch(url);
 		todoData = await res.json();
@@ -26,23 +26,43 @@
 	 * @param {any[]} todoList
 	 */
 	function addTodo(todoList) {
-		todoData = todoList.concat({ id: getTodoLen(todoList), title: value, 'done': false });
+		todoData = todoList.concat({ id: getTodoLen(todoList), title: value, done: false });
 		console.log(todoData);
-		let putData = todoData[todoData.length - 1];
-		putTodo('http://localhost:3000/todo', putData);
+		let postData = todoData[todoData.length - 1];
+		postTodo(url, postData);
 	}
 
 	/**
 	 * @param {string} url
 	 * @param {any[]} data
 	 */
-	async function putTodo(url, data) {
+	async function postTodo(url, data) {
 		await fetch(url, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify(data)
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				console.log('Success', data);
+			})
+			.catch((error) => {
+				console.log('Error', error);
+			});
+	}
+
+	/**
+	 * update Todo data
+	 */
+	async function updateTodo(todoData) {
+		await fetch(url + '/' + todoData.id, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ id: todoData.id, title: todoData.title, done: todoData.done })
 		})
 			.then((response) => response.json())
 			.then((data) => {
@@ -61,7 +81,6 @@
 
 <section>
 	<h1>Todo</h1>
-
 	<input type="text" bind:value />
 	<button disabled={!value} on:click={addTodo(todoData)}>追加</button>
 
@@ -71,13 +90,11 @@
 			{#if todo.done === false}
 				<li>
 					<input type="checkbox" bind:checked={todo.done} />
-					<p>{todo.title}</p>
-					<p />
+					<input value={todo.title} />
 				</li>
 			{/if}
 		{/each}
 	</ul>
-
 	<h2>Done</h2>
 	<ul>
 		{#each todoData as todo}
@@ -85,12 +102,10 @@
 				<li class="done">
 					<input type="checkbox" bind:checked={todo.done} />
 					<p>{todo.title}</p>
-					<p />
 				</li>
 			{/if}
 		{/each}
 	</ul>
-
 </section>
 
 <style>
