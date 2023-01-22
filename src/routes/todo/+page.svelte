@@ -137,6 +137,8 @@
 
 <section>
 	<h1>Todo</h1>
+
+	<h2 class="section-title">Add Todo</h2>
 	<input type="text" bind:value />
 	<button disabled={!value} on:click={addTodo(todoData)}>追加</button>
 
@@ -223,6 +225,10 @@
 	}
 	.section-title {
 		font-size: 24px;
+		margin-top: 50px;
 		font-weight: bold;
+		border-bottom: #ddd 4px solid;
+		padding-bottom: 3px;
+		box-sizing: border-box;
 	}
 </style>
