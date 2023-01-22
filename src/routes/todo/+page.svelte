@@ -9,31 +9,28 @@
 		getTodoData();
 	});
 
+	/**
+	 * Get todo data
+	 */
 	async function getTodoData() {
 		const res = await fetch(url);
 		todoData = await res.json();
 	}
 
 	/**
-	 * @param {string | any[]} todoList
-	 */
-	function getTodoLen(todoList) {
-		return todoList.length + 1;
-	}
-
-	/**
+	 * Todo value
 	 * @type {string}
 	 */
 	let value;
 
 	/**
+	 * Add todo
 	 * @param {any[]} todoList
 	 */
 	function addTodo(todoList) {
-		todoData = todoList.concat({ id: getTodoLen(todoList), title: value, done: false });
+		todoData = todoList.concat({ id: createId(), title: value, done: false });
 		console.log(todoData);
-		let postData = todoData[todoData.length - 1];
-		postTodo(url, postData);
+		postTodo(url, todoData);
 		value = '';
 	}
 
@@ -59,11 +56,12 @@
 	}
 
 	/**
-	 * update Todo data
+	 * Update Todo data
+	 * @param {any} todoData
 	 */
 	async function updateTodo(todoData) {
 		await fetch(url + '/' + todoData.id, {
-			method: 'PUT',
+			method: 'PATCH',
 			headers: {
 				'Content-Type': 'application/json'
 			},
@@ -80,6 +78,7 @@
 
 	/**
 	 * Done todo
+	 * @param {any} todoData
 	 */
 	function doneTodo(todoData) {
 		todoData.done = true;
@@ -91,6 +90,7 @@
 
 	/**
 	 * Un done todo
+	 * @param {any} todoData
 	*/
 	function unDoneTodo(todoData) {
 		todoData.done = false;
@@ -101,7 +101,8 @@
 	}
 
 	/**
-	 * change todo title
+	 * Change todo title
+	 * @param {any} todoData
 	 */
 	function changeTodoTitle(todoData, value) {
 		todoData.title = value;
@@ -112,7 +113,8 @@
 	}
 
 	/**
-	 * delete todo
+	 * Delete todo
+	 * @param {any} todoData
 	 */
 	async function deleteTodoData(todoData) {
 		await fetch(url + '/' + todoData.id, {
@@ -128,6 +130,16 @@
 				console.log('Error', error);
 			});
 	}
+
+	/**
+	 * Create unique id
+	 * @returns {string}
+	*/
+	function createId() {
+		return '_' + Math.random().toString(36).substr(2, 9);
+	}
+
+	console.log(createId());
 </script>
 
 <svelte:head>
